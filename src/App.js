@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 import Routes from './routes';
+import withStoreProvider from './redux/withStoreProvider';
 
 function App() {
   return (
@@ -13,4 +14,4 @@ function App() {
   );
 }
 
-export default App;
+export default withStoreProvider(App);
