@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useSelector ,connect } from 'react-redux'
 
 import { Form, Title } from './style';
+import { Button } from 'antd';
 
 import { Input } from './../../components/Input'
-import { Button } from '../../components/Button';
+import { ButtonLogin } from '../../components/Button';
 import register from '../../redux/action /login/register';
 
 const bindConnection = Component => {
@@ -34,6 +35,10 @@ const Register = (props) => {
       return history.push('/dashboard');
   }, [authenticated])
   
+  function goToLogin(){
+    return history.push('/');
+  }
+
   return (
     <>
       <Title>
@@ -68,7 +73,9 @@ const Register = (props) => {
           onChange={event => setPasswordConfirmation(event.target.value)}
         />
 
-        <Button type="submit">REGISTER</Button>
+        <ButtonLogin type="submit">REGISTER</ButtonLogin>
+
+        <Button type="secondary" style={{ marginTop: 10}} onClick={() => goToLogin()} >Voltar</Button>
 
       </Form>
     </>

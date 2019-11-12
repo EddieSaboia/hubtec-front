@@ -4,8 +4,10 @@ import { useSelector ,connect } from 'react-redux'
 import { Form, Title } from './style';
 
 import { Input } from './../../components/Input'
-import { Button } from '../../components/Button';
+import { ButtonLogin } from '../../components/Button';
+import { Button } from 'antd';
 import authentication from '../../redux/action /login/authentication';
+import { REGISTER } from '../../redux/actiontypes';
 
 const bindConnection = Component => {
   const mapStateToProps = state => (
@@ -38,6 +40,10 @@ const Login = (props) => {
       return history.push('/dashboard');
   }, [authenticated])
   
+  function register(){
+    return history.push("/register")
+  }
+
   return (
     <>
       <Title>
@@ -63,9 +69,11 @@ const Login = (props) => {
           onChange={event => setPassword(event.target.value)}
         />
 
-        <Button type="submit">Entrar</Button>
+        <ButtonLogin type="submit">Entrar</ButtonLogin>
 
+        <Button type="secondary" style={{ marginTop: 10}} onClick={() => register()} >Cadastrar</Button>
       </Form>
+      
     </>
   );
 }

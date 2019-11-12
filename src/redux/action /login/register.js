@@ -29,8 +29,8 @@ export default (email, password, password_confirmation) =>{
 
         } catch (error) {
             const errorMessage = {error}
-
-            console.warn(errorMessage)
+            console.log(errorMessage)
+            alert(errorMessage.error.response.data.errors.full_messages)
             
             dispatch({
                 type: REGISTER_FAILED,

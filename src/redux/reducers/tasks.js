@@ -25,7 +25,8 @@ export default function (state = task, action) {
     switch (action.type) {
         case TASKS_GET_ALL:
             return {
-                ...state
+                ...state,
+                error: ''
             }
         case TASKS_GET_ALL_FAILED:
             return {
@@ -38,10 +39,12 @@ export default function (state = task, action) {
                 to_do: action.payload.to_do,
                 doing: action.payload.doing,
                 done: action.payload.done,
+                error: ''
             }
         case TASKS_CREATE:
             return {
-                ...state
+                ...state,
+                error: ''
             }
         case TASKS_CREATE_FAILED:
             return {
@@ -54,11 +57,13 @@ export default function (state = task, action) {
                 [action.payload.status]: [
                     ...state[action.payload.status],
                     action.payload
-                ]
+                ],
+                error: ''
             }
         case TASKS_EDIT:
             return {
-                ...state
+                ...state,
+                error: ''
             }
         case TASKS_EDIT_FAILED:
             return {
@@ -72,7 +77,8 @@ export default function (state = task, action) {
                 [action.payload.status]: [
                     ...tasks,
                     action.payload.data
-                ]
+                ],
+                error: ''
             }
         case TASKS_MOVE:
             const tasksMove = state[action.payload.status].filter(t => t.id != action.payload.data.id)
@@ -83,7 +89,8 @@ export default function (state = task, action) {
                     ...tasksMove,
                     action.payload.data
                 ],
-                [action.payload.oldStatus]: taskStatusOld
+                [action.payload.oldStatus]: taskStatusOld,
+                error: ''
                 
             }
         case TASKS_DELETE:

@@ -1,5 +1,6 @@
 import API from '../../../services'
 import { setHeaders, getHeaders } from '../../../util/headers'
+import { notification } from 'antd';
 
 import { 
     TASKS_DELETE,
@@ -27,12 +28,22 @@ import {
                 }
            })
 
+           notification.success({
+            message: 'Tarefa Deletada',
+            description:
+              '',
+            style: {
+              width: 600,
+              marginLeft: 335 - 600,
+            },
+          });
+           
        } catch (err) {
         
            const errorMessage = 'error'
 
            console.warn(errorMessage)
-           
+           setHeaders(err.response.headers)
            dispatch({
                type: TASKS_DELETE_FAILED,
                payload: errorMessage

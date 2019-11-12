@@ -1,5 +1,6 @@
 import API from '../../../services'
 import { setHeaders, getHeaders } from '../../../util/headers'
+import { notification } from 'antd';
 
 import {
     TASKS_EDIT,
@@ -29,6 +30,15 @@ export default (id, status, body, oldStatus = null) => {
                         data: response.data
                     }
                 })
+                notification.success({
+                    message: 'Tarefa Editada',
+                    description:
+                      '',
+                    style: {
+                      width: 600,
+                      marginLeft: 335 - 600,
+                    },
+                  });
             }else{
                 dispatch({
                     type: TASKS_EDIT_SUCCESS,
@@ -45,7 +55,7 @@ export default (id, status, body, oldStatus = null) => {
             const errorMessage = 'error'
 
             console.warn(errorMessage)
-
+            setHeaders(err.response.headers)
             dispatch({
                 type: TASKS_EDIT_FAILED,
                 payload: errorMessage

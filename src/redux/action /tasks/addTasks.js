@@ -1,5 +1,6 @@
 import API from '../../../services'
 import { setHeaders, getHeaders } from '../../../util/headers'
+import { notification } from 'antd';
 
 import { 
     TASKS_CREATE,
@@ -23,15 +24,23 @@ import {
                payload: response.data
            })
 
+           notification.success({
+            message: 'Tarefa Adicionada',
+            description:
+              '',
+            style: {
+              width: 600,
+              marginLeft: 335 - 600,
+            },
+          });
        } catch (err) {
         
            const errorMessage = 'error'
 
-           console.warn(errorMessage)
-           
+           setHeaders(err.response.headers)
            dispatch({
                type: TASKS_CREATE_FAILED,
-               payload: errorMessage
+               payload: err.response.data[0]
            })
 
        }

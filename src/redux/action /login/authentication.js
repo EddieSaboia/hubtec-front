@@ -6,6 +6,7 @@ import {
     AUTHENTICATE_FAILED,
     AUTHENTICATE_SUCCESS} 
     from '../../actiontypes'
+import { Alert } from 'antd'
 
 export default (email, password) =>{
     return async (dispatch) =>{
@@ -29,7 +30,7 @@ export default (email, password) =>{
         } catch (error) {
             const errorMessage = {error}
 
-            console.warn(errorMessage)
+            alert(errorMessage.error.response.data.errors[0])
             
             dispatch({
                 type: AUTHENTICATE_FAILED,

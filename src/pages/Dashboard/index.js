@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Column } from './styles.js'
 import { useSelector, connect } from 'react-redux'
 import getTasks from './../../redux/action /tasks/getTasks'
 import editTask from './../../redux/action /tasks/editTask'
 import addTask from './../../redux/action /tasks/addTasks'
 import deleteTask from './../../redux/action /tasks/deleteTask'
-import { Modal, Button, Card, Icon } from 'antd';
+import logout from './../../redux/action /login/logout'
+import { Modal, Button, Icon, notification } from 'antd';
 import { Input } from './../../components/Input'
 import { Form } from '../../components/Form/index.js';
 import { Title, TitleCard } from '../../components/Label/index.js';
 import { ListTask } from '../../components/List'
-import {ColumnButton } from './../../components/Column'
-import { ButtonActionsCards } from './../../components/Button'
-import ActionButton from 'antd/lib/modal/ActionButton';
+import { ColumnButton, ColumnButtonActions, ContainerButtons } from './../../components/Column'
+import { Card } from './../../components/Card'
+import { RemoveButton, EditButton } from './../../components/Button'
+import Alert from 'react-bootstrap/Alert'
 
 const bindConnection = Component => {
   return connect(
@@ -21,29 +23,55 @@ const bindConnection = Component => {
       getTasks,
       editTask,
       addTask,
-      deleteTask
+      deleteTask,
+      logout
     }
   )(Component);
 }
 
 const Dashboard = (props) => {
   const { history } = props;
-  
-  if(!localStorage.getItem("access-token")){
+  const { authenticated, } = useSelector(state => state.user)
+  const tasks = useSelector(state => state.tasks)
+  const { error } = tasks
+  const prevError = usePrevious({ error });
+  const [show, setShow] = useState(true);
+
+  if (!localStorage.getItem("access-token")) {
     history.push("/")
+  }
+
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
   }
 
   useEffect(() => {
     const user_id = localStorage.getItem('user');
     props.getTasks({
-        headers: { user_id }
+      headers: { user_id }
     })
   }, []);
 
+  useEffect(() => {
+    console.log(prevError, "prevError")
+    console.log(error, "error")
+    if (prevError) {
+      if (prevError.error !== error && prevError.error !== "") {
+        setModalVisible(false);
+      }else{
+        alert("deu erro seu animal conserta isso ae")
+      }
+    }
+  }, [error])
+
   const [state, setState] = useState({
     formData: {
-      name: "",
-      description: "",
+      name: "dsadsa ",
+      description: "dsada",
       end_time: "",
     },
     editedId: "",
@@ -104,28 +132,28 @@ const Dashboard = (props) => {
     if (state.editedId != "") {
 
       const user_id = localStorage.getItem('user');
-      props.editTask(state.editedId, state.statusEdit, state.formData,{
+      props.editTask(state.editedId, state.statusEdit, state.formData, {
         headers: { user_id }
-    })
+      })
 
       setModalVisible(false)
     } else {
 
       const user_id = localStorage.getItem('user');
-      props.addTask(state.formData,{
+      props.addTask(state.formData, {
         headers: { user_id }
-    })
+      });
+      // setModalVisible(false)
 
-      setModalVisible(false)
     }
   }
 
   const deleteTask = (id, status) => {
 
     const user_id = localStorage.getItem('user');
-    props.deleteTask(id, status,{
+    props.deleteTask(id, status, {
       headers: { user_id }
-  })
+    })
 
   }
 
@@ -135,19 +163,30 @@ const Dashboard = (props) => {
       status: status
     }
     const user_id = localStorage.getItem('user');
-    props.editTask(id, status, body, oldStatus,{
+    props.editTask(id, status, body, oldStatus, {
       headers: { user_id }
-  })
-  } 
+    })
+  }
+
+  const logoutt = () => {
+    props.logout();
+  }
+
 
   return (
     <>
       <div>
 
-        <Button type="primary" onClick={() => setModalVisible(true)}>
-          Add
-        </Button>
 
+        <ContainerButtons>
+          <Button type="primary" onClick={() => setModalVisible(true)}>
+            <Icon type="plus" />
+          </Button>
+
+          <Button type="danger" onClick={() => logoutt()}>
+            <Icon type="logout" />
+          </Button>
+        </ContainerButtons>
         <Modal
           title="Adicionar Tarefas"
           visible={modalVisible}
@@ -155,12 +194,12 @@ const Dashboard = (props) => {
           onCancel={() => setModalVisible(false)}
           footer={[
             <Button
-            key="Back" onClick={() => setModalVisible(false)}
-            >REturn</Button>,
+              key="Back" onClick={() => setModalVisible(false)}
+            >Voltar</Button>,
             <Button
-            key="submit" type="primary"   onClick={() => (state.editedId != "") ? handleSubmit(state) : handleSubmit(state)}
-            >Submit</Button>,
-          ]} 
+              key="submit" type="primary" onClick={() => (state.editedId != "") ? handleSubmit(state) : handleSubmit(state)}
+            >Enviar</Button>,
+          ]}
         >
           <Form onSubmit={handleSubmit}>
 
@@ -208,27 +247,31 @@ const Dashboard = (props) => {
                 <Title>{task.name}</Title>
                 <p>{task.description}</p>
                 <p>{task.end_time}</p>
-                <Button style={{ marginLeft: 10 , marginBottom: 10}} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
-                  Edit
-                </Button>
-                <Button style={{ marginLeft: 10 , marginBottom: 10}} type="danger" onClick={() => deleteTask(task.id, task.status)}>
-                  Deletar
-                </Button>
+
+                <ColumnButton>
+                  <EditButton style={{ marginLeft: 10, marginBottom: 10 }} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
+                    <Icon type="edit" />
+                  </EditButton>
+                  <RemoveButton style={{ marginLeft: 10, marginBottom: 10 }} type="danger" onClick={() => deleteTask(task.id, task.status)}>
+                    <Icon type="delete" />
+                  </RemoveButton>
+                </ColumnButton>
+
                 <ColumnButton>
                   {task.status !== "to_do" &&
-                      <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
-                        onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
-                      >
-                      <Icon type="arrow-left" />
-                      </Button>
-                    }
-                    {task.status !== "done" && 
-                      <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
-                        onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
-                      >
-                        <Icon type="arrow-right" />
-                      </Button>
-                    }
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
+                      onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
+                    >
+                      A Fazer
+                    </Button>
+                  }
+                  {task.status !== "done" &&
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
+                      onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
+                    >
+                      Fazendo
+                    </Button>
+                  }
                 </ColumnButton>
               </Card>
             ))}
@@ -241,27 +284,30 @@ const Dashboard = (props) => {
                 <Title>{task.name}</Title>
                 <p>{task.description}</p>
                 <p>{task.end_time}</p>
-                <Button style={{ marginLeft: 10 , marginBottom: 10}} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
-                  Edit
-                </Button>
-                <Button style={{ marginLeft: 10, marginBottom: 10 }} type="danger" onClick={() => deleteTask(task.id, task.status)}>
-                  Deletar
-                </Button>
+                <ColumnButtonActions>
+                  <EditButton style={{ marginLeft: 10, marginBottom: 10 }} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
+                    <Icon type="edit" />
+                  </EditButton>
+                  <RemoveButton style={{ marginLeft: 10, marginBottom: 10 }} type="danger" onClick={() => deleteTask(task.id, task.status)}>
+                    <Icon type="delete" />
+                  </RemoveButton>
+                </ColumnButtonActions>
+
                 <ColumnButton>
                   {task.status !== "to_do" &&
-                      <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
-                        onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
-                      >
-                      <Icon type="arrow-left" />
-                      </Button>
-                    }
-                    {task.status !== "done" && 
-                      <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
-                        onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
-                      >
-                        <Icon type="arrow-right" />
-                      </Button>
-                    }
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
+                      onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
+                    >
+                      A Fazer
+                    </Button>
+                  }
+                  {task.status !== "done" &&
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
+                      onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
+                    >
+                      Feito
+                    </Button>
+                  }
                 </ColumnButton>
               </Card>
             ))}
@@ -274,25 +320,27 @@ const Dashboard = (props) => {
                 <Title>{task.name}</Title>
                 <p>{task.description}</p>
                 <p>{task.end_time}</p>
-                <Button style={{ marginLeft: 10, marginBottom: 10 }} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
-                  Edit
-                </Button>
-                <Button style={{ marginLeft: 10,  marginBottom: 10 }} type="danger" onClick={() => deleteTask(task.id, task.status)}>
-                  Deletar
-                </Button>
+                <ColumnButton>
+                  <EditButton style={{ marginLeft: 10, marginBottom: 10 }} type="secondary" onClick={() => TaskIt(task.id, task.status)}>
+                    <Icon type="edit" />
+                  </EditButton>
+                  <RemoveButton style={{ marginLeft: 10, marginBottom: 10 }} type="danger" onClick={() => deleteTask(task.id, task.status)}>
+                    <Icon type="delete" />
+                  </RemoveButton>
+                </ColumnButton>
                 <ColumnButton>
                   {task.status !== "to_do" &&
-                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
                     >
-                      <Icon type="arrow-left" />
+                      Fazendo
                     </Button>
                   }
-                  {task.status !== "done" && 
-                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary" 
+                  {task.status !== "done" &&
+                    <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
                     >
-                      <Icon type="arrow-right" />
+                      Feito
                     </Button>
                   }
                 </ColumnButton>
@@ -301,8 +349,10 @@ const Dashboard = (props) => {
           </ListTask>
         </div>
       </Column>
+
     </>
   )
+
 }
 
 export default bindConnection(Dashboard);
