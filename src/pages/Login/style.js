@@ -8,8 +8,8 @@ export const Form = styled.form`
     padding: 30px;
 `;
 
-export const Pform = styled.p`
-font-size: 22px;
+export const Title = styled.p`
+  font-size: 22px;
   line-height: 30px;
   margin-bottom: 30px;
   text-align: center;
