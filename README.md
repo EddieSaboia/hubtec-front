@@ -1,3 +1,6 @@
+<h1>Descrição</h1>
+<p>Projeto do Front feito em React JS, tendo seu back-end em Rais API link <a href="https://github.com/EddieSaboia/hubtec-api" rel="nofollow">Clique Aqui</a>, tendo sua principal funcionalidade criar e auxiliar nas tarefas diarias do usuario, onde o mesmo pode criar tarefas e organizalas pelos status em que se encontram.</p>
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
