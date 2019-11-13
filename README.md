@@ -4,7 +4,7 @@
 <h2>Como usar</h2>
 
 1. Download do projeto no GitHub
-</br>git clone https://github.com/EddieSaboia/hubtec-api.git
+</br>git clone https://github.com/EddieSaboia/hubtec-front.git
 
 2. Abrir pasta do projeto.
 
