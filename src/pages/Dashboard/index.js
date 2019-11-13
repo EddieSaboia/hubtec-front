@@ -57,13 +57,18 @@ const Dashboard = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(prevError, "prevError")
-    console.log(error, "error")
     if (prevError) {
       if (prevError.error !== error && prevError.error !== "") {
+        alert();
         setModalVisible(false);
-      }else{
-        alert("deu erro seu animal conserta isso ae")
+        setState({
+          ...state,
+          formData: {
+            name: "",
+            description: "",
+            end_time: "",
+          },
+        })
       }
     }
   }, [error])
@@ -262,14 +267,14 @@ const Dashboard = (props) => {
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
                     >
-                      A Fazer
+                     Mover para A Fazer
                     </Button>
                   }
                   {task.status !== "done" &&
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
                     >
-                      Fazendo
+                     Mover para Fazendo
                     </Button>
                   }
                 </ColumnButton>
@@ -298,14 +303,14 @@ const Dashboard = (props) => {
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
                     >
-                      A Fazer
+                    Mover para A Fazer
                     </Button>
                   }
                   {task.status !== "done" &&
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
                     >
-                      Feito
+                     Mover para Feito
                     </Button>
                   }
                 </ColumnButton>
@@ -333,14 +338,14 @@ const Dashboard = (props) => {
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "doing") ? "to_do" : "doing"), task, task.status)}
                     >
-                      Fazendo
+                     Mover para Fazendo
                     </Button>
                   }
                   {task.status !== "done" &&
                     <Button style={{ marginLeft: 10, marginBottom: 10 }} type="primary"
                       onClick={() => moveTask(task.id, ((task.status == "to_do") ? "doing" : "done"), task, task.status)}
                     >
-                      Feito
+                     Mover para Feito
                     </Button>
                   }
                 </ColumnButton>

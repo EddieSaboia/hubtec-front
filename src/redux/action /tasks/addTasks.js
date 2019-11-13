@@ -38,6 +38,14 @@ import {
            const errorMessage = 'error'
 
            setHeaders(err.response.headers)
+           notification.error({
+            message: 'Tarefa Não pode ser Cadastrada',
+            description: err.response.data[0],
+            style: {
+              width: 600,
+              marginLeft: 335 - 600,
+            },
+          });
            dispatch({
                type: TASKS_CREATE_FAILED,
                payload: err.response.data[0]

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'http://10.50.29.112:3001';
+const url = 'https://hubtec-rails.herokuapp.com'
 // const url = 'http://localhost:3001';
 
 const API = axios.create({ baseURL: url });

@@ -28,6 +28,7 @@ const Register = (props) => {
   function handleSubmit(event) {
     event.preventDefault()
     props.register(email, password, passwordConfirmation)
+    history.push('/dashboard');
   }
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const Register = (props) => {
           onChange={event => setPasswordConfirmation(event.target.value)}
         />
 
-        <ButtonLogin type="submit">REGISTER</ButtonLogin>
+        <ButtonLogin type="submit">Cadastrar</ButtonLogin>
 
         <Button type="secondary" style={{ marginTop: 10}} onClick={() => goToLogin()} >Voltar</Button>
 
