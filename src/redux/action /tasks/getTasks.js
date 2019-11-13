@@ -35,7 +35,6 @@ import {
               });
         } catch (err) {
          
-            const errorMessage = 'error'
 
             setHeaders(err.response.headers)
 

@@ -148,7 +148,7 @@ const Dashboard = (props) => {
       props.addTask(state.formData, {
         headers: { user_id }
       });
-      // setModalVisible(false)
+      //setModalVisible(false)
 
     }
   }
